@@ -1,5 +1,6 @@
 const { generateToken } = require('lib/token');
 const mongoose = require('mongoose');
+
 const { Schema } = mongoose;
 const crypto = require('crypto');
 
@@ -9,7 +10,7 @@ function hash(password) {
 
 const Account = new Schema({
     profile: {
-        username: String,
+        userId: String,
         thumbnail: { type: String, default: '/static/images/default_thumbnail.png' }
     },
     email: { type: String },
@@ -28,28 +29,28 @@ const Account = new Schema({
     createdAt: { type: String, default: Date.now }
 });
 
-Account.statics.findByUsername = function(username) {
-    return this.findOne({ 'profile.username': username }).exec();
+Account.statics.findByUserId = function(userId) {
+    return this.findOne({ 'profile.userId': userId }).exec();
 };
 
 Account.statics.findByEmail = function(email) {
     return this.findOne({ email }).exec();
 };
 
-Account.statics.findByEmailOrUsername = function({ username, email }) {
+Account.statics.findByEmailOrUserId = function({ userId, email }) {
     return this.findOne({
         $or: [
-            { 'profile.username': username },
+            { 'profile.userId': userId },
             { email }
         ]
     }).exec();
 };
 
 //  회원가입 
-Account.statics.localRegister = function({ username, email, password }) {
+Account.statics.signUp = function({ userId, email, password }) {
     const account = new this({
         profile: {
-            username
+            userId
         },
         email,
         password: hash(password)

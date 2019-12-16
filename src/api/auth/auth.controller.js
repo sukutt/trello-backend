@@ -1,9 +1,11 @@
 const Joi = require('@hapi/joi');
 const Account = require('models/account');
 
-exports.localRegister = async (ctx) => {
+exports.signUp = async (ctx) => {
+    console.log(ctx.request.body);
     const schema = Joi.object({
-        username: Joi.string().alphanum().min(4).max(15).required(),
+        userId: Joi.string().alphanum().min(4).max(15)
+            .required(),
         email: Joi.string().email().required(),
         password: Joi.string().required().min(6)
     });
@@ -17,7 +19,7 @@ exports.localRegister = async (ctx) => {
 
     let existing = null;
     try {
-        existing = await Account.findByEmailOrUsername(ctx.request.body);
+        existing = await Account.findByEmailOrUserId(ctx.request.body);
     } catch(e) {
         ctx.throw(500, e);
     }
@@ -25,7 +27,7 @@ exports.localRegister = async (ctx) => {
     if(existing) {
         ctx.status = 409;
         ctx.body = {
-            key: existing.email === ctx.request.body.email ? 'email' : 'username'
+            key: existing.email === ctx.request.body.email ? 'email' : 'userId'
         };
 
         return;
@@ -33,7 +35,7 @@ exports.localRegister = async (ctx) => {
 
     let account = null;
     try {
-        account = await Account.localRegister(ctx.request.body);
+        account = await Account.signUp(ctx.request.body);
     } catch (e) {
         ctx.throw(500, e);
     }
@@ -50,7 +52,7 @@ exports.localRegister = async (ctx) => {
     ctx.body = account.profile;
 };
 
-exports.localLogin = async (ctx) => {
+exports.signIn = async (ctx) => {
     const schema = Joi.object({
         email: Joi.string().email().required(),
         password: Joi.string().required()
@@ -93,7 +95,7 @@ exports.exists = async (ctx) => {
     let account = null;
 
     try {
-        account = await (key === 'email' ? Account.findByEmail(value) : Account.findByUsername(value));
+        account = await (key === 'email' ? Account.findByEmail(value) : Account.findByUserId(value));
     } catch(e) {
         ctx.throw(500, e);
     }
