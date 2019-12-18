@@ -1,52 +1,25 @@
 const Joi = require('@hapi/joi');
-
+const Account = require('models/account');
+const Board = require('models/Board');
 
 exports.getBoards = async (ctx) => {
-    // const { value } = ctx.params;
-    // let account = null;
+    const { value } = ctx.params;
+    let account = null;
 
-    // try {
-    //     account = await (key === 'email' ? Account.findByEmail(value) : Account.findByUserId(value));
-    // } catch(e) {
-    //     ctx.throw(500, e);
-    // }
+    try {
+        account = await Account.findByEmail(value);
+    } catch(e) {
+        ctx.throw(500, e);
+    }
 
-    // ctx.body = {
-    //     exists: account != null
-    // };
-    // const schema = Joi.object({
-    //     email: Joi.string().email().required(),
-    //     password: Joi.string().required()
-    // });
-
-    // const result = schema.validate(ctx.request.body);
-
-    // if(result.error) {
-    //     ctx.status = 400;
-    //     return;
-    // }
-
-    // const { email, password } = ctx.request.body;
+    console.log(account);
     
-    // let account = null;
-    // try {
-    //     account = await Account.findByEmail(email);
-    // } catch (e) {
-    //     ctx.throw(500, e);
-    // }
+    let boards = null;
+    try {
+        boards = await Board.findByAccountId(account._id);
+    } catch (e) {
+        ctx.throw(500, e);
+    }
 
-    // if(!account || !account.validatePassword(password)) {
-    //     ctx.status = 403;
-    //     return;
-    // }
-
-    // let token = null;
-    // try {
-    //     token = await account.generateToken();
-    // } catch (e) {
-    //     ctx.throw(500, e);
-    // }
-
-    // ctx.cookies.set('access_token', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 });
-    // ctx.body = account.profile;
+    ctx.body = boards;
 };
