@@ -13,4 +13,16 @@ Board.statics.findByAccountId = function(accountId) {
     return this.find({ account_id: accountId }).exec();
 };
 
+Board.statics.createBoard = function(params) {
+    const collection = this; 
+    const newBoard = new this(params);
+    newBoard.save()
+    .then(() => {
+        return collection.find({});
+    })
+    .catch((err) => {
+        console.error(err);
+    });
+};
+
 module.exports = mongoose.model('Board', Board);

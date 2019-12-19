@@ -1,6 +1,6 @@
 const Joi = require('@hapi/joi');
 const Account = require('models/account');
-const Board = require('models/Board');
+const Board = require('models/board');
 
 exports.getBoards = async (ctx) => {
     const { value } = ctx.params;
@@ -11,8 +11,6 @@ exports.getBoards = async (ctx) => {
     } catch(e) {
         ctx.throw(500, e);
     }
-
-    console.log(account);
     
     let boards = null;
     try {
@@ -21,5 +19,30 @@ exports.getBoards = async (ctx) => {
         ctx.throw(500, e);
     }
 
+    ctx.body = boards;
+};
+
+exports.createBoard = async (ctx) => {
+    const { email, title } = ctx.request.body;
+    let account = null;
+
+    try {
+        account = await Account.findByEmail(email);
+    } catch(e) {
+        ctx.throw(500, e);
+    }
+
+    let boards = null;
+    try {
+        boards = await Board.createBoard({
+            account_id: account._id,
+            title,
+            thumbnail: "",
+            favorite: false,
+        });
+    } catch (e) {
+        ctx.throw(500, e);
+    }
+    
     ctx.body = boards;
 };
