@@ -32,17 +32,17 @@ exports.createBoard = async (ctx) => {
         ctx.throw(500, e);
     }
 
-    let boards = null;
+    let newBoard = null;
     try {
-        boards = await Board.createBoard({
+        newBoard = await Board.createBoard({
             account_id: account._id,
             title,
-            thumbnail: "",
-            favorite: false,
+            thumbnail: '',
+            favorite: false
         });
     } catch (e) {
         ctx.throw(500, e);
     }
-    
-    ctx.body = boards;
+
+    ctx.body = newBoard;
 };

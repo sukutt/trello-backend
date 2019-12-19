@@ -30,11 +30,11 @@ const Account = new Schema({
 });
 
 Account.statics.findByUserId = function(userId) {
-    return this.findOne({ 'profile.userId': userId }).exec();
+    return this.findOne({ 'profile.userId': userId });
 };
 
 Account.statics.findByEmail = function(email) {
-    return this.findOne({ email }).exec();
+    return this.findOne({ email });
 };
 
 Account.statics.findByEmailOrUserId = function({ userId, email }) {
@@ -43,7 +43,7 @@ Account.statics.findByEmailOrUserId = function({ userId, email }) {
             { 'profile.userId': userId },
             { email }
         ]
-    }).exec();
+    });
 };
 
 //  회원가입 
