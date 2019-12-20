@@ -1,8 +1,8 @@
 const Joi = require('@hapi/joi');
 const Account = require('models/account');
+const fs = require('fs');
 
 exports.signUp = async (ctx) => {
-    console.log(ctx.request.body);
     const schema = Joi.object({
         userId: Joi.string().alphanum().min(4).max(15)
             .required(),
@@ -46,6 +46,11 @@ exports.signUp = async (ctx) => {
     } catch (e) {
         ctx.throw(500, e);
     }
+
+    // 계정 마다 폴더 생성
+    const dir = `public/${account.email}/boards`;
+    !fs.existsSync(dir)
+    && fs.mkdir(dir, { recursive: true }, (err) => { console.log(err) });
 
     ctx.cookies.set('access_token', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 });
 

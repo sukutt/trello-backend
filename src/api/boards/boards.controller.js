@@ -11,15 +11,17 @@ exports.getBoards = async (ctx) => {
     } catch(e) {
         ctx.throw(500, e);
     }
-    
+
     let boards = null;
-    try {
-        boards = await Board.findByAccountId(account._id);
-    } catch (e) {
-        ctx.throw(500, e);
+    if(account) {
+        try {
+            boards = await Board.findByAccountId(account._id);
+        } catch (e) {
+            ctx.throw(500, e);
+        }
     }
 
-    ctx.body = boards;
+    ctx.body = boards || [];
 };
 
 exports.createBoard = async (ctx) => {
@@ -46,3 +48,14 @@ exports.createBoard = async (ctx) => {
 
     ctx.body = newBoard;
 };
+
+exports.updateBoard = async (ctx) => {
+    let updatedBoard = null;
+    try {
+        updatedBoard = await Board.updateBoard(ctx.request.body);
+    } catch (e) {
+        ctx.throw(500, e);
+    }
+
+    ctx.body = updatedBoard._id;
+}

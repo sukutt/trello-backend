@@ -18,4 +18,11 @@ Board.statics.createBoard = function(params) {
     return newBoard.save();
 };
 
+Board.statics.updateBoard = function(params) {
+    const { id, ...rest } = params;
+    return this.findOneAndUpdate({ _id: id }, rest, {
+        returnNewDocument: true,
+    });
+}
+
 module.exports = mongoose.model('Board', Board);

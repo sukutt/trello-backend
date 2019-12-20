@@ -2,6 +2,7 @@ require('dotenv').config(); // .env 파일에서 환경변수 불러오기
 
 const Koa = require('koa');
 const Router = require('koa-router');
+const serve = require('koa-static');
 
 const app = new Koa();
 const router = new Router();
@@ -14,6 +15,7 @@ const { jwtMiddleware } = require('lib/token');
 mongoose.Promise = global.Promise; // Node 의 네이티브 Promise 사용
 // mongodb 연결
 mongoose.connect(process.env.MONGO_URI, {
+    useFindAndModify: false,
     useUnifiedTopology: true,
     useNewUrlParser: true
 }).then(
@@ -27,6 +29,8 @@ mongoose.connect(process.env.MONGO_URI, {
 const port = process.env.PORT || 4000; // PORT 값이 설정되어있지 않다면 4000 을 사용합니다.
 
 app.use(bodyParser()); // 바디파서 적용, 라우터 적용코드보다 상단에 있어야합니다.
+app.use(serve('./public'));
+app.use(serve('./front-end/build'));
 app.use(jwtMiddleware);
 
 router.use('/api', api.routes()); // api 라우트를 /api 경로 하위 라우트로 설정
