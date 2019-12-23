@@ -51,7 +51,7 @@ exports.getBoardImages = async (ctx) => {
 };
 
 exports.createBoard = async (ctx) => {
-    const { email, title } = ctx.request.body;
+    const { email, title, thumbnail } = ctx.request.body;
     let account = null;
 
     try {
@@ -65,7 +65,7 @@ exports.createBoard = async (ctx) => {
         newBoard = await Board.createBoard({
             account_id: account._id,
             title,
-            thumbnail: '',
+            thumbnail,
             favorite: false
         });
     } catch (e) {
