@@ -21,7 +21,7 @@ Board.statics.createBoard = function(params) {
 Board.statics.updateBoard = function(params) {
     const { id, ...rest } = params;
     return this.findOneAndUpdate({ _id: id }, rest, {
-        returnNewDocument: true
+        new: true
     });
 };
 

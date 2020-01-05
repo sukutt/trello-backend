@@ -8,5 +8,6 @@ boards.get('/images', boardsCtrl.getBoardImages);
 boards.post('/', boardsCtrl.createBoard);
 boards.patch('/', boardsCtrl.updateBoard);
 boards.get('/:value', boardsCtrl.getBoards);
+boards.get('/:value/lists', boardsCtrl.getLists);
 
 module.exports = boards;

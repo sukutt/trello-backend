@@ -1,6 +1,7 @@
-const Joi = require('@hapi/joi');
 const Account = require('models/account');
 const Board = require('models/board');
+const List = require('models/list');
+const Card = require('models/card');
 const BoardImage = require('models/boardImage');
 
 exports.getBoards = async (ctx) => {
@@ -16,13 +17,59 @@ exports.getBoards = async (ctx) => {
     let boards = null;
     if(account) {
         try {
-            boards = await Board.findByAccountId(account._id);
+            boards = await Board.findByAccountId(account.id);
         } catch (e) {
             ctx.throw(500, e);
         }
     }
 
     ctx.body = boards || [];
+};
+
+exports.getLists = async (ctx) => {
+    // value(Board ID)
+    const { value } = ctx.params;
+
+    // 해당 보드에 해당하는 TDL 목록 가져오기
+    let lists = null;
+    try {
+        lists = await List.findByBoardId(value);
+    } catch (e) {
+        ctx.throw(500, e);
+    }
+
+    const mappedLists = {}; 
+    const response = [];
+    const listIds = lists.map((list) => {
+        const listObject = {
+            id: list.id,
+            title: list.title,
+            cards: []
+        };
+
+        mappedLists[list.id] = listObject;
+        response.push(listObject);
+
+        return list._id;
+    });
+
+    // TDL 목록 하부의 모든 카드 목록 가져오기
+    let cards = null;
+    try {
+        cards = await Card.findByListsIds(listIds);
+    } catch (e) {
+        ctx.throw(500, e);
+    }
+
+    // 위에서 획득한 2개의 목록을 merge 해서 보내준다.
+    for (let index = 0; index < cards.length; index++) {
+        mappedLists[cards[index].list_id].cards.push(cards[index]);
+    }
+
+    ctx.body = {
+        boardId: value,
+        list: response
+    };
 };
 
 exports.getBoardImages = async (ctx) => {
@@ -63,7 +110,7 @@ exports.createBoard = async (ctx) => {
     let newBoard = null;
     try {
         newBoard = await Board.createBoard({
-            account_id: account._id,
+            account_id: account.id,
             title,
             thumbnail,
             favorite: false
@@ -83,5 +130,5 @@ exports.updateBoard = async (ctx) => {
         ctx.throw(500, e);
     }
 
-    ctx.body = updatedBoard._id;
+    ctx.body = updatedBoard;
 };
