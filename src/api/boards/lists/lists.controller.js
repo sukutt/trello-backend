@@ -1,4 +1,5 @@
 const List = require('models/list');
+const Card = require('models/card');
 
 exports.createList = async (ctx) => {
     const { title, boardId } = ctx.request.body;
@@ -15,6 +16,25 @@ exports.createList = async (ctx) => {
     }
 
     ctx.body = newList;
+};
+
+exports.createCard = async (ctx) => {
+    // 리스트 ID
+    const { value } = ctx.params;
+    const { content } = ctx.request.body;
+
+    let newCard = null;
+    try {
+        newCard = await Card.createCard({
+            list_id: value,
+            content,
+            order: 3
+        });
+    } catch (e) {
+        ctx.throw(500, e);
+    }
+
+    ctx.body = newCard;
 };
 
 exports.updateList = async (ctx) => {
