@@ -4,12 +4,21 @@ const Card = require('models/card');
 exports.createList = async (ctx) => {
     const { title, boardId } = ctx.request.body;
 
+    let lastList = null;
+    try {
+        lastList = await List.getLastOrderList(boardId);
+    } catch (e) {
+        ctx.throw(500, e);
+    }
+
+    const maxOrder = lastList.length > 0 ? lastList[0].order + 1 : 1;
+
     let newList = null;
     try {
         newList = await List.createList({
             board_id: boardId,
             title,
-            order: 3
+            order: maxOrder
         });
     } catch (e) {
         ctx.throw(500, e);
@@ -27,8 +36,7 @@ exports.createCard = async (ctx) => {
     try {
         newCard = await Card.createCard({
             list_id: value,
-            content,
-            order: 3
+            content
         });
     } catch (e) {
         ctx.throw(500, e);
@@ -53,9 +61,24 @@ exports.reorder = async (ctx) => {
     const { key, value } = ctx.params;
     const { list } = ctx.request.body;
 
-    console.log(key);
-    console.log(value);
-    console.log(list);
+    let newOrderedCollection = null;
+    // 리스트 재정렬
+    if (key === 'list') {
+        for(let i = 0; i < list.length; ++i) {
+            await List.reorder({
+                order: i + 1,
+                listId: list[i]
+            });
+        }
 
-    ctx.body = list;
+        newOrderedCollection = await List.findByBoardId(value);
+    } else {
+
+    }
+
+    ctx.body = {
+        type: key,
+        id: value,
+        newOrderedCollection
+    };
 };

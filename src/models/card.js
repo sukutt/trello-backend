@@ -5,7 +5,7 @@ const { Schema } = mongoose;
 const Card = new Schema({
     list_id: { type: mongoose.Schema.Types.ObjectId, ref: 'List' },
     content: String,
-    order: Number
+    order: { type: Number, default: 1, index: false }
 });
 
 Card.statics.findByListsIds = function(listIds) {

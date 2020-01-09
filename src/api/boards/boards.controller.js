@@ -42,8 +42,9 @@ exports.getLists = async (ctx) => {
     const response = [];
     const listIds = lists.map((list) => {
         const listObject = {
-            id: list.id,
+            _id: list.id,
             title: list.title,
+            order: list.order,
             cards: []
         };
 
