@@ -8,7 +8,7 @@ const cards = require('./boards/lists/cards');
 
 api.use('/auth', auth.routes());
 api.use('/boards', boards.routes());
-api.use('/lists', lists.routes());
+api.use('/tdl', lists.routes());
 api.use('/cards', cards.routes());
 
 module.exports = api;

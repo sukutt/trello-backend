@@ -48,3 +48,14 @@ exports.updateList = async (ctx) => {
 
     ctx.body = updatedList._id;
 };
+
+exports.reorder = async (ctx) => {
+    const { key, value } = ctx.params;
+    const { list } = ctx.request.body;
+
+    console.log(key);
+    console.log(value);
+    console.log(list);
+
+    ctx.body = list;
+};
