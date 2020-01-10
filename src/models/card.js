@@ -11,7 +11,11 @@ const Card = new Schema({
 Card.statics.findByListsIds = function(listIds) {
     return this.find({
         list_id: listIds
-    }).exec();
+    }).sort({ order: 1 }).exec();
+};
+
+Card.statics.getLastOrderCard = function(listId) {
+    return this.find({ list_id: listId }).sort({ order: 1 }).limit(1);
 };
 
 Card.statics.createCard = function(params) {
@@ -25,6 +29,16 @@ Card.statics.updateCard = function(params) {
         returnNewDocument: true
     });
 };
+
+Card.statics.reorder = function({ order, cardId, listId }) {
+    this.findOneAndUpdate({ _id: cardId }, {
+        $set: { 
+            list_id: listId,
+            order
+        }
+    }, {}, () => {});
+};
+
 
 module.exports = mongoose.model('Card', Card);
 

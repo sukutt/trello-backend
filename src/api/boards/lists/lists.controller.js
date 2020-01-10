@@ -32,11 +32,21 @@ exports.createCard = async (ctx) => {
     const { value } = ctx.params;
     const { content } = ctx.request.body;
 
+    let lastCard = null;
+    try {
+        lastCard = await Card.getLastOrderCard(value);
+    } catch (e) {
+        ctx.throw(500, e);
+    }
+
+    const maxOrder = lastCard.length > 0 ? lastCard[0].order + 1 : 1;
+
     let newCard = null;
     try {
         newCard = await Card.createCard({
             list_id: value,
-            content
+            content,
+            order: maxOrder
         });
     } catch (e) {
         ctx.throw(500, e);
@@ -61,7 +71,6 @@ exports.reorder = async (ctx) => {
     const { key, value } = ctx.params;
     const { list } = ctx.request.body;
 
-    let newOrderedCollection = null;
     // 리스트 재정렬
     if (key === 'list') {
         for(let i = 0; i < list.length; ++i) {
@@ -70,15 +79,15 @@ exports.reorder = async (ctx) => {
                 listId: list[i]
             });
         }
-
-        newOrderedCollection = await List.findByBoardId(value);
     } else {
-
+        for(let i = 0; i < list.length; ++i) {
+            await Card.reorder({
+                order: i + 1,
+                cardId: list[i],
+                listId: value
+            });
+        }
     }
 
-    ctx.body = {
-        type: key,
-        id: value,
-        newOrderedCollection
-    };
+    ctx.status = 200;
 };

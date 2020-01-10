@@ -14,22 +14,6 @@ exports.getCards = async (ctx) => {
     ctx.body = cards || [];
 };
 
-exports.createCard = async (ctx) => {
-    const { content, listId } = ctx.request.body;
-
-    let newCard = null;
-    try {
-        newCard = await Card.createCard({
-            list_id: listId,
-            content 
-        });
-    } catch (e) {
-        ctx.throw(500, e);
-    }
-
-    ctx.body = newCard;
-};
-
 exports.updateCard = async (ctx) => {
     let updatedCard = null;
 

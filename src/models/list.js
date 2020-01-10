@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-// const { MongooseAutoIncrementID } = require('mongoose-auto-increment-reworked');
 
 const { Schema } = mongoose;
 
