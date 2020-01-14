@@ -21,6 +21,14 @@ List.statics.createList = function(params) {
     return newList.save();
 };
 
+List.statics.deleteLists = async function(params) {
+    const { id } = params;
+    const list = await this.findOne({ board_id: id });
+    await this.deleteMany({ board_id: id });
+
+    return list && list.id;
+};
+
 List.statics.reorder = function({ order, listId }) {
     this.findOneAndUpdate({ _id: listId }, {
         $set: { order }

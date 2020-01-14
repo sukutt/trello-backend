@@ -9,5 +9,6 @@ boards.post('/', boardsCtrl.createBoard);
 boards.patch('/', boardsCtrl.updateBoard);
 boards.get('/:value', boardsCtrl.getBoards);
 boards.get('/:value/tdl', boardsCtrl.getLists);
+boards.delete('/:value', boardsCtrl.deleteBoard);
 
 module.exports = boards;

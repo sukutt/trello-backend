@@ -23,6 +23,11 @@ Card.statics.createCard = function(params) {
     return newCard.save();
 };
 
+Card.statics.deleteCards = function(params) {
+    const { id } = params;
+    return this.deleteMany({ list_id: id });
+};
+
 Card.statics.updateCard = function(params) {
     const { id, ...rest } = params;
     return this.findOneAndUpdate({ _id: id }, rest, {

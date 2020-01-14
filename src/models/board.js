@@ -18,6 +18,11 @@ Board.statics.createBoard = function(params) {
     return newBoard.save();
 };
 
+Board.statics.deleteBoard = function(params) {
+    const { id } = params;
+    return this.findOneAndDelete({ _id: id });
+};
+
 Board.statics.updateBoard = function(params) {
     const { id, ...rest } = params;
     return this.findOneAndUpdate({ _id: id }, rest, {

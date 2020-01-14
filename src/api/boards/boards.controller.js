@@ -133,3 +133,35 @@ exports.updateBoard = async (ctx) => {
 
     ctx.body = updatedBoard;
 };
+
+exports.deleteBoard = async (ctx) => {
+    // value: board id
+
+    // 보드 삭제
+    const { value } = ctx.params;
+    try {
+        await Board.deleteBoard({ id: value });
+    } catch (e) {
+        ctx.throw(500, e);
+    }
+
+    // 리스트 삭제
+    let deletedListId = null;
+    try {
+        deletedListId = await List.deleteLists({ id: value });
+    } catch (e) {
+        ctx.throw(500, e);
+    }
+
+    console.log(deletedListId);
+    if (deletedListId) {
+        // 카드 삭제
+        try {
+            await Card.deleteCards({ id: deletedListId });
+        } catch (e) {
+            ctx.throw(500, e);
+        }
+    }
+
+    ctx.status = 200;
+};
