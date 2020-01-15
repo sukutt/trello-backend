@@ -28,13 +28,12 @@ exports.createList = async (ctx) => {
 };
 
 exports.createCard = async (ctx) => {
-    // 리스트 ID
-    const { value } = ctx.params;
+    const { listId, boardId } = ctx.params;
     const { content } = ctx.request.body;
 
     let lastCard = null;
     try {
-        lastCard = await Card.getLastOrderCard(value);
+        lastCard = await Card.getLastOrderCard(listId);
     } catch (e) {
         ctx.throw(500, e);
     }
@@ -44,7 +43,8 @@ exports.createCard = async (ctx) => {
     let newCard = null;
     try {
         newCard = await Card.createCard({
-            list_id: value,
+            board_id: boardId,
+            list_id: listId,
             content,
             order: maxOrder
         });
@@ -56,15 +56,20 @@ exports.createCard = async (ctx) => {
 };
 
 exports.updateList = async (ctx) => {
+    const { listId } = ctx.params;
+    const props = ctx.request.body;
     let updatedList = null;
 
     try {
-        updatedList = await List.updateList(ctx.request.body);
+        updatedList = await List.updateList({
+            id: listId,
+            props
+        });
     } catch (e) {
         ctx.throw(500, e);
     }
 
-    ctx.body = updatedList._id;
+    ctx.body = updatedList;
 };
 
 exports.reorder = async (ctx) => {

@@ -21,12 +21,14 @@ List.statics.createList = function(params) {
     return newList.save();
 };
 
-List.statics.deleteLists = async function(params) {
-    const { id } = params;
-    const list = await this.findOne({ board_id: id });
-    await this.deleteMany({ board_id: id });
-
-    return list && list.id;
+List.statics.deleteLists = function(params) {
+    const { 
+        key = '_id',
+        id
+    } = params;
+    return this.deleteMany({
+        [key]: id
+    });
 };
 
 List.statics.reorder = function({ order, listId }) {
@@ -36,8 +38,8 @@ List.statics.reorder = function({ order, listId }) {
 };
 
 List.statics.updateList = function(params) {
-    const { id, ...rest } = params;
-    return this.findOneAndUpdate({ _id: id }, rest, {
+    const { id, props } = params;
+    return this.findOneAndUpdate({ _id: id }, props, {
         new: true
     });
 };
