@@ -96,3 +96,40 @@ exports.reorder = async (ctx) => {
 
     ctx.status = 200;
 };
+
+exports.deleteList = async (ctx) => {
+    const { listId } = ctx.params;
+
+    await List.deleteLists({
+        id: listId
+    });
+
+    await Card.deleteCards({
+        key: 'list_id',
+        id: listId
+    });
+
+    ctx.body = listId;
+};
+
+exports.deleteCards = async (ctx) => {
+    const { key, id } = ctx.params;
+    const { listId } = ctx.request.body;
+
+    if (key === 'card') {
+        await Card.deleteCards({
+            id
+        });
+    } else {
+        await Card.deleteCards({
+            key: 'list_id',
+            id
+        });
+    }
+
+    ctx.body = {
+        key,
+        id,
+        listId
+    }; 
+};
