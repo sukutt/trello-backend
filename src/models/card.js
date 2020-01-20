@@ -37,8 +37,9 @@ Card.statics.deleteCards = function(params) {
 
 Card.statics.updateCard = function(params) {
     const { id, ...rest } = params;
+    console.log(rest);
     return this.findOneAndUpdate({ _id: id }, rest, {
-        returnNewDocument: true
+        new: true
     });
 };
 

@@ -9,6 +9,7 @@ lists.post('/', listCtrl.createList);
 lists.patch('/:listId', listCtrl.updateList);
 lists.patch('/:key(list|card)/:value', listCtrl.reorder);
 lists.delete('/:listId', listCtrl.deleteList);
-lists.delete('/:key(list|card)/:id', listCtrl.deleteCards);
+lists.delete('/:key(list|card)/:listId/:id', listCtrl.deleteCards);
+lists.patch('/:listId/:id', listCtrl.editCard);
 
 module.exports = lists;

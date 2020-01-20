@@ -63,7 +63,7 @@ exports.getLists = async (ctx) => {
     }
 
     // 위에서 획득한 2개의 목록을 merge 해서 보내준다.
-    for (let index = 0; index < cards.length; index++) {
+    for (let index = 0; index < cards.length; index += 1) {
         mappedLists[cards[index].list_id].cards.push(cards[index]);
     }
 

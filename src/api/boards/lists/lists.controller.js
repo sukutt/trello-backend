@@ -76,23 +76,26 @@ exports.reorder = async (ctx) => {
     const { key, value } = ctx.params;
     const { list } = ctx.request.body;
 
+    const results = [];
     // 리스트 재정렬
     if (key === 'list') {
-        for(let i = 0; i < list.length; ++i) {
-            await List.reorder({
+        for(let i = 0; i < list.length; i += 1) {
+            results.push(List.reorder({
                 order: i + 1,
                 listId: list[i]
-            });
+            }));
         }
     } else {
-        for(let i = 0; i < list.length; ++i) {
-            await Card.reorder({
+        for(let i = 0; i < list.length; i += 1) {
+            results.push(Card.reorder({
                 order: i + 1,
                 cardId: list[i],
                 listId: value
-            });
+            }));
         }
     }
+
+    await Promise.all(results);
 
     ctx.status = 200;
 };
@@ -113,8 +116,7 @@ exports.deleteList = async (ctx) => {
 };
 
 exports.deleteCards = async (ctx) => {
-    const { key, id } = ctx.params;
-    const { listId } = ctx.request.body;
+    const { key, id, listId } = ctx.params;
 
     if (key === 'card') {
         await Card.deleteCards({
@@ -132,4 +134,18 @@ exports.deleteCards = async (ctx) => {
         id,
         listId
     }; 
+};
+
+exports.editCard = async (ctx) => {
+    const { id } = ctx.params;
+    const { text } = ctx.request.body;
+
+    const newCard = await Card.updateCard({
+        id,
+        content: text
+    });
+
+    ctx.body = {
+        newCard
+    };
 };
