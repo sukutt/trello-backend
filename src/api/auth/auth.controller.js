@@ -49,8 +49,8 @@ exports.signUp = async (ctx) => {
 
     // 계정 마다 폴더 생성
     const dir = `public/${account.email}/boards`;
-    !fs.existsSync(dir)
-    && fs.mkdir(dir, { recursive: true }, (err) => { console.log(err) });
+    !fs.existsSync(dir) &&
+    fs.mkdir(dir, { recursive: true }, (err) => { console.log(err); });
 
     ctx.cookies.set('access_token', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 });
 
@@ -71,7 +71,7 @@ exports.signIn = async (ctx) => {
     }
 
     const { email, password } = ctx.request.body;
-    
+
     let account = null;
     try {
         account = await Account.findByEmail(email);
@@ -124,7 +124,6 @@ exports.logout = async (ctx) => {
 
 exports.check = (ctx) => {
     const { user } = ctx.request;
-
     if(!user) {
         ctx.status = 403; // Forbidden
         return;

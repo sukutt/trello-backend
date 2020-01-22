@@ -25,7 +25,6 @@ const Account = new Schema({
         }
     },
     password: String,
-    thoughtCount: { type: Number, default: 0 },
     createdAt: { type: String, default: Date.now }
 });
 

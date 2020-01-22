@@ -5,7 +5,7 @@ const authCtrl = require('./auth.controller');
 
 auth.post('/signup', authCtrl.signUp);
 auth.post('/signin', authCtrl.signIn);
-auth.get('/exists/:key(email|userId)/:value', authCtrl.exists);
+auth.get('/exists/:key(email|userid)/:value', authCtrl.exists);
 auth.post('/logout', authCtrl.logout);
 auth.get('/check', authCtrl.check);
 
