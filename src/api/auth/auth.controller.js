@@ -40,19 +40,10 @@ exports.signUp = async (ctx) => {
         ctx.throw(500, e);
     }
 
-    let token = null;
-    try {
-        token = await account.generateToken();
-    } catch (e) {
-        ctx.throw(500, e);
-    }
-
     // 계정 마다 폴더 생성
     const dir = `public/${account.email}/boards`;
     !fs.existsSync(dir) &&
     fs.mkdir(dir, { recursive: true }, (err) => { console.log(err); });
-
-    ctx.cookies.set('access_token', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 });
 
     ctx.body = account.profile;
 };
