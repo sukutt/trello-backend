@@ -52,8 +52,10 @@ Account.statics.signUp = function({ userId, email, password }) {
             userId
         },
         email,
-        password: hash(password)
+        password: password ? hash(password) : undefined
     });
+
+    console.log(account);
 
     return account.save();
 };
